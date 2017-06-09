@@ -3,7 +3,7 @@
 import pandas as pd
 import os
 
-print 'Demonstrating that there are some negative values that are inconsistent'
+print('Demonstrating that there are some negative values that are inconsistent')
 
 df = pd.read_pickle('h5/ColumnedDataset.pkl')
 
@@ -18,7 +18,7 @@ for name in columns:
 if not os.path.isfile('h5/ColumnedDatasetNonNegative.pkl'):
     df.to_pickle('h5/ColumnedDatasetNonNegative.pkl')
 
-print df.describe()
+print(df.describe())
 
 del df
 del stat
