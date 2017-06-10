@@ -3,7 +3,7 @@ import os
 
 import pandas as pd
 
-print 'Selecting columns...'
+print('Selecting columns...')
 
 cols = ['location_cd', 'promotion', 'time_key',
         'sku', 'change_pct', 'price_retail', 'tematico_ind',
@@ -17,7 +17,7 @@ if not os.path.isfile('h5/ColumnedDataset.pkl'):
 
 df = pd.read_pickle('h5/ColumnedDataset.pkl')
 
-print df.describe()
+print(df.describe())
 
 del cols
 del df

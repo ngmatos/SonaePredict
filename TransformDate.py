@@ -6,7 +6,7 @@ import pandas as pd
 
 df = pd.read_pickle('h5/ColumnedDatasetNonNegative.pkl')
 
-print 'Transforming date into week, week_day, year'
+print('Transforming date into week, week_day, year')
 
 
 def get_date(value, keyword):
@@ -37,6 +37,6 @@ if not os.path.isfile('h5/ColumnedDatasetNonNegativeWithDate.pkl'):
     df.to_pickle('h5/ColumnedDatasetNonNegativeWithDate.pkl')
 
 # df = pd.read_pickle('h5/ColumnedDatasetNonNegativeWithDate.pkl')
-print df.head()
+print(df.head())
 
 del df

@@ -2,13 +2,13 @@
 # are useless in this case
 import pandas as pd
 
-print 'Demonstrating that some columns are useless for the problem'
+print('Demonstrating that some columns are useless for the problem')
 
 df = pd.read_pickle('h5/AggregatedDataset.pkl')
 
 stat = df.describe()
 
-print stat
+print(stat)
 
 del stat
 del df
