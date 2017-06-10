@@ -10,7 +10,7 @@ def get_merged_csv(flist, **kwargs):
 
 print('Aggregating all CSV files...')
 
-path = '/Users/mercurius/GoogleDrive/FEUP/ADES/data'
+path = '/Users/pedro/Documents/Ficheiros/Sonae-ADES'
 fmask = os.path.join(path, '*.csv')
 
 df = get_merged_csv(glob.glob(fmask), index_col=None)

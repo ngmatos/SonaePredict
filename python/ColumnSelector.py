@@ -21,7 +21,3 @@ print(df.describe())
 
 del cols
 del df
-
-
-
-
