@@ -12,7 +12,7 @@ def to_array(array, indexes):
 '''
 
 CHUNK_SIZE = 1024
-K_PARTITIONS = 10
+K_PARTITIONS = 2
 
 print('Using K-Fold Cross Validation for evaluating estimator performance')
 
@@ -25,8 +25,11 @@ print('Starting partition in 3 seconds...')
 time.sleep(3)
 
 for chunk in iter_hdf:
+    chunk = chunk.drop('promotion', 1)
     kf = KFold(n_splits=K_PARTITIONS)
+
     count += 1
     print('Partitioning chunk ', count)
+    print(chunk)
     for train, test in kf.split(chunk):
         print(train, test)
