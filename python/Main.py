@@ -1,14 +1,14 @@
 # Used to call of the other python files
 # Order is mandatory
 
-import CsvAggregator
+import python.CsvAggregator
 
-import NaNDemonstrator
+import python.NaNDemonstrator
 
-import ColumnSelector
+import python.ColumnSelector
 
-import NegativeValuesDemonstrator
+import python.NegativeValuesDemonstrator
 
-import TransformDate
+import python.TransformDate
 
-import NominalToBinary
+import python.NominalToBinary
