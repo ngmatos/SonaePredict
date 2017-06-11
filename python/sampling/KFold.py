@@ -17,12 +17,13 @@ kf = KFold(n_splits=K_PARTITIONS)
 
 # Generating X and y
 y = chunks['quantity_time_key']
-X = chunks.drop('quantity_time_key', 1)
+X = chunks
+# X = chunks.drop('quantity_time_key', 1)
 
-promotion = chunks['promotion']
+# promotion = chunks['promotion']
 
-X = X.drop('promotion', 1)
-X = X.drop('year', 1)
+# X = X.drop('promotion', 1)
+# X = X.drop('year', 1)
 
 for train, test in kf.split(chunks):
     X_train, X_test, y_train, y_test = X.iloc[train], X.iloc[test], y.iloc[train], y.iloc[test]
