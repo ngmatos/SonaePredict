@@ -7,11 +7,11 @@ from sklearn.model_selection import cross_val_score
 import numpy as np
 
 # Global vars
-CHUNK_SIZE = 2048
+CHUNK_SIZE = 300000
 K_PARTITIONS = 2
 
 print('Using K-Fold Cross Validation for evaluating estimator performance')
-iter_hdf = pd.read_hdf('h5/ColumnedDatasetNonNegativeWithDateBinary.h5', chunksize=CHUNK_SIZE)
+iter_hdf = pd.read_hdf('h5/ColumnedDatasetNonNegativeWithDateBinaryImputer.h5', chunksize=CHUNK_SIZE)
 
 chunks = []
 count = 0
@@ -31,6 +31,12 @@ chunks = pd.concat(chunks)
 y = chunks['quantity_time_key']
 X = chunks.drop('quantity_time_key', 1)
 
+promotion = chunks['promotion']
+
+X = X.drop('promotion', 1)
+X = X.drop('year', 1)
+
+'''
 # Run Lasso
 for train, test in kf.split(chunks):
     lasso = Lasso(alpha=0.1)
@@ -41,3 +47,4 @@ for train, test in kf.split(chunks):
     print('Já tou fitness')
     print(lasso.score(X_test, y_test))
     break
+'''
