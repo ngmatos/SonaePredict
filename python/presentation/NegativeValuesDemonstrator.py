@@ -2,10 +2,11 @@
 
 import pandas as pd
 import os
+import python.Config as Config
 
 print('Demonstrating that there are some negative values that are inconsistent')
 
-df = pd.read_pickle('h5/ColumnedDataset.pkl')
+df = pd.read_pickle(Config.H5_PATH + '/ColumnedDataset.pkl')
 
 stat = df.describe()
 
@@ -15,8 +16,8 @@ for name in columns:
     if stat[name]['min'] < 0:
         df = df[df[name] >= 0]
 
-if not os.path.isfile('h5/ColumnedDatasetNonNegative.pkl'):
-    df.to_pickle('h5/ColumnedDatasetNonNegative.pkl')
+if not os.path.isfile(Config.H5_PATH + '/ColumnedDatasetNonNegative.pkl'):
+    df.to_pickle(Config.H5_PATH + '/ColumnedDatasetNonNegative.pkl')
 
 print(df.describe())
 

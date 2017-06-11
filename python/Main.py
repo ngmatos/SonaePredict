@@ -1,16 +1,16 @@
 # Used to call of the other python files
 # Order is mandatory
 
-import python.CsvAggregator
+import python.preparation.CsvAggregator
 
-import python.NaNDemonstrator
+import python.presentation.NaNDemonstrator
 
-import python.ColumnSelector
+import python.preparation.ColumnSelector
 
-import python.NegativeValuesDemonstrator
+import python.presentation.NegativeValuesDemonstrator
 
-import python.TransformDate
+import python.preparation.TransformDate
 
-import python.NominalToBinary
+import python.preparation.NominalToBinary
 
-import python.EstimateValues
+import python.preparation.EstimateValues

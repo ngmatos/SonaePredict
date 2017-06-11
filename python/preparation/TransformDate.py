@@ -3,8 +3,10 @@ import os
 from datetime import date, datetime
 import math
 import pandas as pd
+import python.Config as Config
 
-df = pd.read_pickle('h5/ColumnedDatasetNonNegative.pkl')
+
+df = pd.read_pickle(Config.H5_PATH + '/ColumnedDatasetNonNegative.pkl')
 
 print('Transforming date into week, week_day, year')
 
@@ -33,10 +35,10 @@ df.insert(3, 'week_day', df['time_key'].map(lambda value: get_date(value, keywor
 df.insert(3, 'week', df['time_key'].map(lambda value: get_date(value, keyword='week')))
 df.insert(3, 'year', df['time_key'].map(lambda value: get_date(value, keyword='year')))
 
-if not os.path.isfile('h5/ColumnedDatasetNonNegativeWithDate.pkl'):
-    df.to_pickle('h5/ColumnedDatasetNonNegativeWithDate.pkl')
+if not os.path.isfile(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDate.pkl'):
+    df.to_pickle(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDate.pkl')
 
-# df = pd.read_pickle('h5/ColumnedDatasetNonNegativeWithDate.pkl')
+# df = pd.read_pickle(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDate.pkl')
 print(df.head())
 
 del df

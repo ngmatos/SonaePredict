@@ -3,6 +3,7 @@
 import os
 import glob
 import pandas as pd
+import python.Config as Config
 
 
 def get_merged_csv(flist, **kwargs):
@@ -10,14 +11,13 @@ def get_merged_csv(flist, **kwargs):
 
 print('Aggregating all CSV files...')
 
-# path = '/Users/pedro/Documents/Ficheiros/Sonae-ADES'
-path = '/Users/mercurius/GoogleDrive/FEUP/ADES/data'
+path = Config.FILE_PATH
 fmask = os.path.join(path, '*.csv')
 
 df = get_merged_csv(glob.glob(fmask), index_col=None)
 
-if not os.path.isfile('h5/AggregatedDataset.pkl'):
-    df.to_pickle('h5/AggregatedDataset.pkl')
+if not os.path.isfile(Config.H5_PATH + '/AggregatedDataset.pkl'):
+    df.to_pickle(Config.H5_PATH + '/AggregatedDataset.pkl')
 
 print('Aggregated all files.')
 print(df.head())
