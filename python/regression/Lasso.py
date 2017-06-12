@@ -1,6 +1,9 @@
 # import python.sampling.KFold as Sample
+from math import sqrt
+
 import pandas as pd
 from sklearn.model_selection import KFold, train_test_split
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.linear_model import Lasso
 import numpy as np
 import python.Config as Config
@@ -13,8 +16,8 @@ CHUNK_SIZE = 300000
 time = Timer.Timer()
 
 
-print('Reading chunks from ColumnedDatasetNonNegativeWithDateBinaryImputer')
-iter_hdf = pd.read_hdf(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateBinaryImputer.h5', chunksize=CHUNK_SIZE)
+print('Reading chunks from ColumnedDatasetNonNegativeWithDateImputerBinary')
+iter_hdf = pd.read_hdf(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateImputerBinary.h5', chunksize=CHUNK_SIZE)
 
 chunks = []
 count = 0
@@ -27,24 +30,19 @@ for chunk in iter_hdf:
 
 print('Concatenating chunks')
 chunks = pd.concat(chunks)
-print('ALL CHUNKS: ', chunks)
+print('ALL CHUNKS:\n', chunks)
 print('TIME ELAPSED: ', time.get_time_hhmmss())
 
 # Generating X and y
 y = chunks['quantity_time_key']
 X = chunks.drop('quantity_time_key', 1)
 
-promotion = chunks['promotion']
-
-X = X.drop('promotion', 1)
-X = X.drop('year', 1)
-
 print('CHUNKS AFTER REMOVING:\n', X)
 
 lasso = Lasso(alpha=0.1)
 
-Train_set, Test_set, Target_train, Target_test = train_test_split(X.iloc[0:3000000],
-                                                                  y.iloc[0:3000000],
+Train_set, Test_set, Target_train, Target_test = train_test_split(X.iloc[0:2500000],
+                                                                  y.iloc[0:2500000],
                                                                   test_size=0.3,
                                                                   random_state=42)
 time.restart()
@@ -68,7 +66,22 @@ print('Full data frame info:\n', df.info())
 print('Full data frame description:\n', df.describe())
 
 print('Lasso Score (R^2): ', lasso.score(Test_set, Target_test))
+print('Mean Squared Error', mean_squared_error(Target_test, y_prediction))
+print('Root Mean Squared Error', sqrt(mean_squared_error(Target_test, y_prediction)))
+print('Mean Absolute Error', mean_absolute_error(Target_test, y_prediction))
 
+
+del time
+del chunks
+del count
+del y
+del X
+del Train_set
+del Target_train
+del Test_set
+del Target_test
+del y_prediction
+del df
 '''
 kf = Sample.kf
 

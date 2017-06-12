@@ -15,7 +15,7 @@ def read_chunks(file):
 
     chunks = pd.concat(chunks)
     # Drop values
-    drop_attributes(chunks)
+    # drop_attributes(chunks)
     return chunks
 
 

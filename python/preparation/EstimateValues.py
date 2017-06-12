@@ -4,8 +4,8 @@ from sklearn.preprocessing import Imputer
 import python.Config as Config
 import python.Data as Data
 
-# df = pd.read_hdf(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateBinary.h5')
-df = Data.read_chunks('ColumnedDatasetNonNegativeWithDateBinary.h5')
+df = pd.read_pickle(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDate.pkl')
+# df = Data.read_chunks('ColumnedDatasetNonNegativeWithDate.h5')
 
 
 def treat_price_retail(data, column, strategy='mean'):
@@ -20,10 +20,11 @@ df = treat_price_retail(df, 'tematico_ind')
 df = treat_price_retail(df, 'folheto_ind')
 df = treat_price_retail(df, 'tv_ind')
 
-# remove time_key because it's unnecessary since we already have date in other format
-df = df.drop('time_key', 1)
+# Dropping promotion and year
+df = df.drop('promotion', 1)
+df = df.drop('year', 1)
 
-if not os.path.isfile(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateBinaryImputer.h5'):
-    df.to_hdf(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateBinaryImputer.h5', key='data', format='table')
+if not os.path.isfile(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateImputer.h5'):
+    df.to_hdf(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateImputer.h5', key='data', format='table')
 
 print(df.head())

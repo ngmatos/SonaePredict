@@ -11,6 +11,6 @@ import python.presentation.NegativeValuesDemonstrator
 
 import python.preparation.TransformDate
 
-import python.preparation.NominalToBinary
-
 import python.preparation.EstimateValues
+
+import python.preparation.NominalToBinary
