@@ -78,6 +78,21 @@ def run_lasso(alpha, data):
     print('Root Mean Squared Error', sqrt(mean_squared_error(target_test, y_prediction)))
     print('Mean Absolute Error', mean_absolute_error(target_test, y_prediction))
 
+    '''
+    target_plot = [val for val in target_test]
+
+    print(len(target_plot))
+    print(len(y_prediction))
+
+    plot.figure()
+    plot.scatter(target_plot, y_prediction, c="darkorange", label="data")
+    plot.xlabel("data")
+    plot.ylabel("target")
+    plot.title("Lasso Data")
+    plot.legend()
+    plot.show()
+    '''
+
 
 # Run script
 main()
