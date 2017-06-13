@@ -12,12 +12,13 @@ import python.Timer as Timer
 # Lasso without K-Fold Cross Validation
 
 # Global vars
-CHUNK_SIZE = 300000
+DATA_SET_SIZE = Config.TRIM_DATA_SET
 time = Timer.Timer()
 
 
 print('Reading chunks from ColumnedDatasetNonNegativeWithDateImputerBinary')
-iter_hdf = pd.read_hdf(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateImputerBinary.h5', chunksize=CHUNK_SIZE)
+iter_hdf = pd.read_hdf(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateImputerBinary.h5',
+                       chunksize=Config.CHUNK_SIZE)
 
 chunks = []
 count = 0
@@ -41,8 +42,8 @@ print('CHUNKS AFTER REMOVING:\n', X)
 
 lasso = Lasso(alpha=0.1)
 
-Train_set, Test_set, Target_train, Target_test = train_test_split(X.iloc[0:2500000],
-                                                                  y.iloc[0:2500000],
+Train_set, Test_set, Target_train, Target_test = train_test_split(X.iloc[0:DATA_SET_SIZE],
+                                                                  y.iloc[0:DATA_SET_SIZE],
                                                                   test_size=0.3,
                                                                   random_state=42)
 time.restart()
@@ -82,15 +83,3 @@ del Test_set
 del Target_test
 del y_prediction
 del df
-'''
-kf = Sample.kf
-
-X_train, X_test, y_train, y_test = Sample.X_train, Sample.X_test, Sample.y_train, Sample.y_test
-
-# Run Lasso
-lasso = Lasso(alpha=0.1)
-lasso.fit(X_train, y_train)
-
-# Performance
-print('Lasso score (R^2):', lasso.score(X_test, y_test))
-'''

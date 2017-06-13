@@ -3,7 +3,7 @@ from math import sqrt
 import pandas as pd
 from sklearn.linear_model import Lasso
 from sklearn.metrics import mean_squared_error, mean_absolute_error
-from sklearn.model_selection import train_test_split
+import python.sampling.RandomSplit as RandomSplit
 
 import python.Config as Config
 from python.Timer import Timer
@@ -27,7 +27,8 @@ print('TIME ELAPSED: ', time.get_time_hhmmss())
 lasso = Lasso(alpha=0.1)
 # Splitting Sets
 print('Splitting Sets')
-Train_set, Test_set, Target_train, Target_test = train_test_split(df, target, test_size=0.3, random_state=42)
+# Using Random Split
+Train_set, Test_set, Target_train, Target_test = RandomSplit.get_sample(df, target)
 
 # Fitting
 time.restart()
