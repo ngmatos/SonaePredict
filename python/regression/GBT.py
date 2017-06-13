@@ -15,7 +15,7 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-RUN_WITH_PCA = False
+RUN_WITH_PCA = True
 
 
 def main():
@@ -41,11 +41,11 @@ def read_normal(lines):
 
 
 def read_pca():
-    df = Data.read_hdf('PCAed.h5')
-    target = Data.read_hdf('ColumnedDatasetNonNegativeWithDateImputer.h5')
+    df = Data.read_hdf('/PCAed50.h5')
+    target = Data.read_hdf('/ColumnedDatasetNonNegativeWithDateImputer.h5')
     target = target['quantity_time_key']
 
-    return RandomSplit.get_sample(df, target), df
+    return RandomSplit.get_sample(df.iloc[0:500000], target.iloc[0:500000]), df
 
 
 def run_gbt(data, x):
@@ -53,7 +53,7 @@ def run_gbt(data, x):
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    params = {'n_estimators': 100, 'max_depth': 3,
+    params = {'n_estimators': 200, 'max_depth': 3,
               'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
     clf = GradientBoostingRegressor(**params)
     clf.fit(train_set, target_train)

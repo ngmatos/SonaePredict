@@ -15,7 +15,7 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-RUN_WITH_PCA = False
+RUN_WITH_PCA = True
 
 
 def main():
@@ -41,8 +41,8 @@ def read_normal(lines):
 
 
 def read_pca():
-    df = Data.read_hdf('PCAed.h5')
-    target = Data.read_hdf('ColumnedDatasetNonNegativeWithDateImputer.h5')
+    df = Data.read_hdf('/PCAed.h5')
+    target = Data.read_hdf('/ColumnedDatasetNonNegativeWithDateImputer.h5')
     target = target['quantity_time_key']
 
     return RandomSplit.get_sample(df, target), df
