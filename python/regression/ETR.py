@@ -1,8 +1,8 @@
 from math import sqrt
 
 import pandas as pd
+from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.metrics import mean_squared_error,r2_score
-from sklearn.ensemble import GradientBoostingRegressor
 import python.Config as Config
 import python.Timer as Timer
 import python.Data as Data
@@ -10,7 +10,7 @@ import python.sampling.RandomSplit as RandomSplit
 import matplotlib.pyplot as plot
 import numpy as np
 
-# Gradient Boosting Trees
+# Extra Trees Regressor
 # Can run with or without PCA (specify in global var)
 
 # Global vars
@@ -25,7 +25,7 @@ def main():
         data, x = read_normal(Config.TRIM_DATA_SET)
 
     # Run this function for each alpha
-    run_gbt(data, x)
+    run_etr(data, x)
 
 
 def read_normal(lines):
@@ -48,14 +48,12 @@ def read_pca():
     return RandomSplit.get_sample(df, target), df
 
 
-def run_gbt(data, x):
+def run_etr(data, x):
     train_set, test_set, target_train, target_test = data
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    params = {'n_estimators': 100, 'max_depth': 3,
-              'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
-    clf = GradientBoostingRegressor(**params)
+    clf = ExtraTreesRegressor()
     clf.fit(train_set, target_train)
     print('TIME ELAPSED: ', time.get_time_hhmmss())
 
@@ -69,21 +67,6 @@ def run_gbt(data, x):
 
     print("MSE: %.4f" % mse)
     print("R2: %.4f" % r2)
-
-    test_score = np.zeros((params['n_estimators'], ), dtype=np.float64)
-
-    for i, y_pred in enumerate(clf.staged_predict(test_set)):
-        test_score[i] = clf.loss_(target_test, y_pred)
-
-    plot.figure(figsize=(100, 100))
-    plot.subplot(1, 1, 1)
-    plot.title('Deviance')
-    plot.plot(np.arange(params['n_estimators']) + 1, clf.train_score_, 'b-', label='Training Set Deviance')
-    plot.plot(np.arange(params['n_estimators']) + 1, test_score, 'r-', label='Test Set Deviance')
-    plot.legend(loc='upper right')
-    plot.xlabel('Boosting Iterations')
-    plot.ylabel('Deviance')
-    plot.show()
 
 
 # Run script

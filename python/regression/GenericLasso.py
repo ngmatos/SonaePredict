@@ -27,7 +27,8 @@ def main():
         data = read_normal(Config.TRIM_DATA_SET)
 
     # Run this function for each alpha
-    run_lasso(0.1, data)
+    for alpha in np.logspace(-5, 0.1, 3):
+        run_lasso(alpha, data)
 
 
 def read_normal(lines):
@@ -76,9 +77,6 @@ def run_lasso(alpha, data):
     print('Mean Squared Error', mean_squared_error(target_test, y_prediction))
     print('Root Mean Squared Error', sqrt(mean_squared_error(target_test, y_prediction)))
     print('Mean Absolute Error', mean_absolute_error(target_test, y_prediction))
-
-    # plot.title('Plot for lasso with alpha:', alpha)
-    # plot.show()
 
 
 # Run script
