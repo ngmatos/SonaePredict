@@ -14,9 +14,9 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-params = {'n_estimators': 100, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
+params = {'n_estimators': 50, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
 K_PARTITIONS = 3
-K_FOLD = True
+K_FOLD = False
 
 
 def main():
@@ -47,6 +47,8 @@ def run_gbt(data):
         scores, mse, mae, y_prediction = Data.cross_val_execute(clf, x, y, cv, fit_params=params, n_jobs=-1)
         Data.print_scores(np.mean(scores), np.mean(mse), np.mean(mae))
         time.print()
+        plot_x = y
+        plot_y = y_prediction
     else:
         train_set, test_set, target_train, target_test = RandomSplit.get_sample(x, y)
         clf.fit(train_set, target_train)
@@ -72,9 +74,15 @@ def run_gbt(data):
         plot.ylabel('Deviance')
         plot.show(block=False)
 
+        plot_x = target_test
+        plot_y = y_prediction
+
+    print(y)
+    print(y_prediction)
+
     # Plotting Results
     fig, ax = plot.subplots()
-    ax.scatter(y, y_prediction)
+    ax.scatter(plot_x, plot_y)
     ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
     ax.set_xlabel('Measured')
     ax.set_ylabel('Predicted')
