@@ -33,7 +33,7 @@ def main():
 
 
 def read_normal(lines):
-    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputer.h5')
+    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputerBinary.h5')
 
     # Generating X and y
     y = chunks['quantity_time_key']
