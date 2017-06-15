@@ -27,13 +27,18 @@ def main():
     else:
         data = read_normal(Config.TRIM_DATA_SET)
 
+    scores = list()
+    scores_std = list()
+
     # Run this function for each alpha
     for alpha in np.logspace(-5, 0.1, 3):
-        run_lasso(alpha, data)
+        mean, std = run_lasso(alpha, data)
+        scores.append(mean)
+        scores_std.append(std)
 
 
 def read_normal(lines):
-    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputer.h5')
+    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputerBinary.h5')
 
     # Generating X and y
     y = chunks['quantity_time_key']
@@ -56,22 +61,26 @@ def run_lasso(alpha, data):
     x, y = data
 
     time.restart()
+    cv = KFold.get()
 
     print('Fitting model with X_train and y_train...')
-    train_set, test_set, target_train, target_test = RandomSplit.get_sample(x, y)
-    lasso.fit(train_set, target_train)
-    y_prediction = lasso.predict(X=test_set)
-    Data.calc_scores(target_test, y_prediction)
+    scores, mse, mae, y_prediction = Data.cross_val_execute(lasso, x, y, cv, n_jobs=-1)
+    Data.print_scores(np.mean(scores), np.mean(mse), np.mean(mae))
+    r2 = np.mean(scores)
+    std = np.std(scores)
 
     time.print()
 
     # Plotting
     fig, ax = plot.subplots()
-    ax.scatter(target_test, y_prediction)
-    ax.plot([target_test.min(), target_test.max()], [target_test.min(), target_test.max()], 'k--', lw=4)
+    ax.scatter(y, y_prediction)
+    ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
     ax.set_xlabel('Measured')
     ax.set_ylabel('Predicted')
     plot.show()
+
+    # Return scores
+    return r2, std
 
 
 # Run script

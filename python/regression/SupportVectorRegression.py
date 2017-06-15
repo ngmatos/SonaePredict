@@ -62,7 +62,7 @@ def run_svr(data):
     y_prediction = svr.predict(X=test_set)
     time.print()
 
-    Data.print_scores(target_test, y_prediction)
+    Data.calc_scores(target_test, y_prediction)
 
 
 # Run script

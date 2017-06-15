@@ -56,7 +56,7 @@ def run_br(data, x):
     y_prediction = clf.predict(test_set)
     time.print()
 
-    Data.print_scores(target_test, y_prediction)
+    Data.calc_scores(target_test, y_prediction)
 
 # Run script
 main()

@@ -64,7 +64,7 @@ def run_ridge(alpha, data):
     y_prediction = ridge.predict(X=test_set)
     time.print()
 
-    Data.print_scores(target_test, y_prediction)
+    Data.calc_scores(target_test, y_prediction)
 
 
 # Run script
