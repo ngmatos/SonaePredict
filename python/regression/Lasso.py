@@ -38,7 +38,7 @@ def read_normal(lines):
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return RandomSplit.get_sample(x.iloc[0:lines], y.iloc[0:lines])
+    return RandomSplit.get_sample(x, y)
 
 
 def read_pca():
@@ -87,3 +87,20 @@ def run_lasso(alpha, data):
 
 # Run script
 main()
+
+'''
+Full data frame description:
+        TargetPrediction(yPred)  TargetTest(yTest)
+count             1.363804e+06       1.363804e+06
+mean              1.070951e-01       1.064061e-01
+std               5.712002e-01       6.454332e-01
+min              -7.745373e-03       0.000000e+00
+25%               9.026660e-03       0.000000e+00
+50%               1.965499e-02       0.000000e+00
+75%               5.194681e-02       3.333000e-02
+max               4.920873e+01       6.728900e+01
+Lasso Score (R^2):  0.749612538813
+Mean Squared Error 0.104307328479
+Root Mean Squared Error 0.3229664510120647
+Mean Absolute Error 0.0734283518468
+'''

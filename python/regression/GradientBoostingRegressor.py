@@ -24,14 +24,13 @@ def main():
 
 
 def read_normal():
-    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputer.h5')
+    chunks = Data.read_chunks('/ColumnedDatasetNonNegativeWithDateImputer.h5')
 
     # Generating X and y
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
     return RandomSplit.get_sample(x, y), x
-
 
 def run_gbt(data, x):
     train_set, test_set, target_train, target_test = data
@@ -71,3 +70,31 @@ def run_gbt(data, x):
 
 # Run script
 main()
+
+'''
+Reading /PCAed50.h5 file
+TIME ELAPSED:  00:00:03
+Reading /ColumnedDatasetNonNegativeWithDateImputer.h5 file
+TIME ELAPSED:  00:00:02
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+TIME ELAPSED:  01:11:54
+Predicting target with X_test (TEST SET)
+TIME ELAPSED:  00:00:03
+MSE: 0.1002
+R2: 0.7595
+'''
+
+'''
+[4546011 rows x 13 columns]
+350 estimators
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+TIME ELAPSED:  00:31:33
+Predicting target with X_test (TEST SET)
+TIME ELAPSED:  00:00:06
+Mean Absolute Error 0.0621326114504
+Root Mean Squared Error 0.29159367020577187
+MSE: 0.0850
+R2: 0.7959
+'''

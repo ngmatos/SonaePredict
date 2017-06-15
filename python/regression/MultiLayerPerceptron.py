@@ -37,7 +37,7 @@ def read_normal(lines):
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return RandomSplit.get_sample(x.iloc[0:lines], y.iloc[0:lines])
+    return RandomSplit.get_sample(x, y), x
 
 
 def read_pca():
@@ -68,7 +68,6 @@ def run_mlp(data):
     # df['TargetTest(yTest)'] = pd.Series(target_test)
 
     Data.print_scores(target_test, y_prediction)
-
 
 # Run script
 main()

@@ -15,7 +15,7 @@ df = df.drop('quantity_time_key', 1)
 
 rows = df.shape[0]
 chunk_size = Config.CHUNK_SIZE
-components = 200
+components = 50
 ipca = IncrementalPCA(n_components=components, batch_size=32)
 
 time = Timer()
@@ -48,10 +48,10 @@ print('TIME ELAPSED ON TRANSFORM: ', time.get_time_hhmmss())
 
 df = pd.DataFrame(data=out)
 
-if not os.path.isfile(Config.H5_PATH + '/PCAed.h5'):
+if not os.path.isfile(Config.H5_PATH + '/PCAed50.h5'):
     print('SAVING TO H5')
     time.restart()
-    df.to_hdf(Config.H5_PATH + '/PCAed.h5', key='data', format='table')
+    df.to_hdf(Config.H5_PATH + '/PCAed50.h5', key='data', format='table')
     print('TIME ELAPSED: ', time.get_time_hhmmss())
 
 print(df.head())
