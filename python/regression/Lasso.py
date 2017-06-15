@@ -43,7 +43,7 @@ def read_normal(lines):
 
 
 def read_pca():
-    df = Data.read_hdf('PCAed.h5')
+    df = Data.read_hdf('PCAed50.h5')
 
     target = Data.read_hdf('ColumnedDatasetNonNegativeWithDateImputer.h5')
     target = target['quantity_time_key']
@@ -99,4 +99,15 @@ Lasso Score (R^2):  0.749612538813
 Mean Squared Error 0.104307328479
 Root Mean Squared Error 0.3229664510120647
 Mean Absolute Error 0.0734283518468
+'''
+
+'''
+No PCA 2M rows Binary
+Fitting model with X_train and y_train...
+Using Random Split for evaluating estimator performance
+R^2 Score: 0.778697954815
+Mean Squared Error: 0.168339913564
+Root Mean Squared Error: 0.41029247319879236
+Mean Absolute Error: 0.0901767197459
+Time elapsed: 00:02:31 
 '''

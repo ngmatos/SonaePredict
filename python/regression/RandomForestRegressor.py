@@ -177,3 +177,26 @@ Mean Squared Error: 0.0556244872293
 Root Mean Squared Error: 0.23584844122718152
 Mean Absolute Error: 0.0510577645485
 '''
+
+'''
+K-fold = 3
+Estimators = 100
+Using K-Fold Cross Validation for evaluating estimator performance
+[Parallel(n_jobs=-1)]: Done  34 tasks      | elapsed:  9.9min
+[Parallel(n_jobs=-1)]: Done  34 tasks      | elapsed: 10.7min
+[Parallel(n_jobs=-1)]: Done  34 tasks      | elapsed: 11.2min
+[Parallel(n_jobs=-1)]: Done 100 out of 100 | elapsed: 25.5min finished
+[Parallel(n_jobs=8)]: Done  34 tasks      | elapsed:   21.5s
+[Parallel(n_jobs=8)]: Done 100 out of 100 | elapsed:   58.8s finished
+[Parallel(n_jobs=-1)]: Done 100 out of 100 | elapsed: 26.9min finished
+[Parallel(n_jobs=8)]: Done  34 tasks      | elapsed:   17.6s
+[Parallel(n_jobs=-1)]: Done 100 out of 100 | elapsed: 27.5min finished
+[Parallel(n_jobs=8)]: Done 100 out of 100 | elapsed:  1.0min finished
+[Parallel(n_jobs=8)]: Done  34 tasks      | elapsed:   26.5s
+[Parallel(n_jobs=8)]: Done 100 out of 100 | elapsed:   41.1s finished
+R^2 Score: 0.766844117049
+Mean Squared Error: 0.0986885871083
+Root Mean Squared Error: 0.3141473971056744
+Mean Absolute Error: 0.0772306688687
+Time elapsed: 00:28:30 
+'''
