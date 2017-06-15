@@ -9,6 +9,8 @@ import python.Data as Data
 import python.sampling.RandomSplit as RandomSplit
 import matplotlib.pyplot as plot
 import numpy as np
+import _pickle as pickle
+import python.sPickle as sPickle
 
 # Extra Trees Regressor
 
@@ -37,9 +39,15 @@ def run_etr(data, x):
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    clf = ExtraTreesRegressor()
+    clf = ExtraTreesRegressor(n_estimators=100, n_jobs=-1, verbose=1, bootstrap=True)
     clf.fit(train_set, target_train)
     time.print()
+
+    time.restart()
+    print('Saving model')
+    filename = 'ETRModel.pkl'
+    pickle.dump(clf, open(filename, 'wb'))
+    print('TIME SPENT: ', time.get_time_hhmmss())
 
     time.restart()
     print('Predicting target with X_test (TEST SET)')
@@ -47,7 +55,6 @@ def run_etr(data, x):
     time.print()
 
     Data.print_scores(target_test, y_prediction)
-
 
 # Run script
 main()
@@ -75,7 +82,7 @@ Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
 [Parallel(n_jobs=-1)]: Done  30 out of  30 | elapsed:  2.3min finished
 TIME ELAPSED:  00:02:18
 Predicting target with X_test (TEST SET)
-[Parallel(n_jobs=8)]: Done  30 out of  30 | elapsed:    5.6s finished
+-[Parallel(n_jobs=8)]: Done  30 out of  30 | elapsed:    5.6s finished
 TIME ELAPSED:  00:00:05
 Mean Absolute Error 0.0534063973
 Root Mean Squared Error 0.24408269319884998

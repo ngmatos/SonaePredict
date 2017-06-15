@@ -1,6 +1,7 @@
 from math import sqrt
 
 import pandas as pd
+from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import python.Config as Config
@@ -9,6 +10,7 @@ import python.Data as Data
 import python.sampling.RandomSplit as RandomSplit
 import matplotlib.pyplot as plot
 import numpy as np
+import pickle
 
 # Random Forest Regression
 
@@ -38,9 +40,16 @@ def run_rfr(data, x):
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    clf = RandomForestRegressor(verbose=1, n_jobs=-1, n_estimators=50)
+    clf = RandomForestRegressor(verbose=1, n_jobs=-1, n_estimators=250)
     clf.fit(train_set, target_train)
     print('TIME ELAPSED:', time.get_time_hhmmss())
+
+    time.restart()
+    print('Saving model')
+    filename = 'RFRModel.pkl'
+    # pickle.dump(clf, open(filename, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+    joblib.dump(clf, filename, 5, pickle.HIGHEST_PROTOCOL)
+    print('TIME SPENT: ', time.get_time_hhmmss())
 
     time.restart()
     print('Predicting target with X_test (TEST SET)')
@@ -100,4 +109,26 @@ Mean Absolute Error 0.0515096754874
 Root Mean Squared Error 0.2384443351819688
 MSE: 0.0569
 R2: 0.8635
+'''
+
+'''
+Estimators = 100
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+[Parallel(n_jobs=-1)]: Done  34 tasks      | elapsed:  4.4min
+[Parallel(n_jobs=-1)]: Done 100 out of 100 | elapsed: 11.7min finished
+TIME ELAPSED: 00:11:40
+Saving model
+TIME SPENT:  00:07:25
+Predicting target with X_test (TEST SET)
+[Parallel(n_jobs=8)]: Done  34 tasks      | elapsed:    6.4s
+[Parallel(n_jobs=8)]: Done 100 out of 100 | elapsed:   19.0s finished
+TIME ELAPSED: 00:00:20
+[Parallel(n_jobs=8)]: Done  34 tasks      | elapsed:    6.5s
+[Parallel(n_jobs=8)]: Done 100 out of 100 | elapsed:   16.6s finished
+RFR Score (R^2): 0.865608822831
+Mean Squared Error: 0.0559851703244
+Root Mean Squared Error: 0.2366118558407467
+Mean Absolute Error: 0.0512401905142
+
 '''

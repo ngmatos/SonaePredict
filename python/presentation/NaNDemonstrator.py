@@ -10,6 +10,7 @@ df = pd.read_pickle(Config.H5_PATH + '/AggregatedDataset.pkl')
 stat = df.describe()
 
 print(stat)
+print(df[:0])
 
 del stat
 del df

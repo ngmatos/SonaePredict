@@ -47,7 +47,7 @@ def run_br(data, x):
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    clf = BaggingRegressor()
+    clf = BaggingRegressor(n_jobs=-1, n_estimators=1000, verbose=1)
     clf.fit(train_set, target_train)
     time.print()
 
@@ -60,3 +60,37 @@ def run_br(data, x):
 
 # Run script
 main()
+
+'''
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+Time elapsed: 00:03:41 
+
+Predicting target with X_test (TEST SET)
+Time elapsed: 00:00:08 
+
+R^2 Score: 0.852091180664
+Mean Squared Error: 0.0616163993607
+Root Mean Squared Error: 0.2482265081748665
+Mean Absolute Error: 0.0536155326917
+'''
+
+'''
+Using Random Split for evaluating estimator performance
+Estimators = 20
+Jobs = -1
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+[Parallel(n_jobs=8)]: Done   2 out of   8 | elapsed:  2.4min remaining:  7.2min
+[Parallel(n_jobs=8)]: Done   8 out of   8 | elapsed:  3.3min finished
+Time elapsed: 00:03:17 
+
+Predicting target with X_test (TEST SET)
+[Parallel(n_jobs=8)]: Done   2 out of   8 | elapsed:    7.3s remaining:   21.9s
+[Parallel(n_jobs=8)]: Done   8 out of   8 | elapsed:   12.9s finished
+Time elapsed: 00:00:13 
+
+R^2 Score: 0.860246893495
+Mean Squared Error: 0.0582188625466
+Root Mean Squared Error: 0.241285852354897
+Mean Absolute Error: 0.0523197127932
+'''

@@ -15,9 +15,7 @@ df = pd.read_pickle(Config.H5_PATH + '/AggregatedDataset.pkl')
 if not os.path.isfile(Config.H5_PATH + '/ColumnedDataset.pkl'):
         df[cols].to_pickle(Config.H5_PATH + '/ColumnedDataset.pkl')
 
-df = pd.read_pickle(Config.H5_PATH + '/ColumnedDataset.pkl')
-
-print(df)
+print(df[cols].describe())
 
 del cols
 del df

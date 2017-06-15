@@ -32,6 +32,7 @@ def read_normal():
 
     return RandomSplit.get_sample(x, y), x
 
+
 def run_gbt(data, x):
     train_set, test_set, target_train, target_test = data
     time.restart()
