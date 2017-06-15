@@ -80,7 +80,6 @@ def run_gbt(data):
     ax.set_ylabel('Predicted')
     plot.show()
 
-
 # Run script
 main()
 
@@ -110,4 +109,15 @@ Mean Absolute Error 0.0621326114504
 Root Mean Squared Error 0.29159367020577187
 MSE: 0.0850
 R2: 0.7959
+'''
+
+'''
+Estimators = 100
+Using K-Fold Cross Validation for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+R^2 Score: 0.735274230117
+Mean Squared Error: 0.127313089077
+Root Mean Squared Error: 0.35680959779238075
+Mean Absolute Error: 0.0673262423782
+Time elapsed: 00:09:56 
 '''
