@@ -68,7 +68,7 @@ def run_rfr(data):
     ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
     ax.set_xlabel('Measured')
     ax.set_ylabel('Predicted')
-    plot.show(block=False)
+    plot.show()
 
 # Run script
 main()

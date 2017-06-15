@@ -70,7 +70,7 @@ def run_gbt(data):
         plot.legend(loc='upper right')
         plot.xlabel('Boosting Iterations')
         plot.ylabel('Deviance')
-        plot.show()
+        plot.show(block=False)
 
     # Plotting Results
     fig, ax = plot.subplots()
@@ -78,7 +78,7 @@ def run_gbt(data):
     ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
     ax.set_xlabel('Measured')
     ax.set_ylabel('Predicted')
-    plot.show(block=False)
+    plot.show()
 
 
 # Run script
