@@ -27,18 +27,18 @@ def main():
         data = read_normal(Config.TRIM_DATA_SET)
 
     # Run this function for each alpha
-    for alpha in np.logspace(-5, 0.1, 3):
-        run_lasso(alpha, data)
+    # for alpha in np.logspace(-5, 0.1, 3):
+    run_lasso(0.1, data)
 
 
 def read_normal(lines):
-    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputerBinary.h5')
+    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputer.h5')
 
     # Generating X and y
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return RandomSplit.get_sample(x.iloc[0:10000], y.iloc[0:10000])
+    return RandomSplit.get_sample(x.iloc[0:5000], y.iloc[0:5000])
 
 
 def read_pca():

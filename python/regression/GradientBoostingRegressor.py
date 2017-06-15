@@ -14,7 +14,6 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-params = {'n_estimators': 200, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
 
 
 def main():
@@ -38,7 +37,9 @@ def run_gbt(data, x):
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    clf = GradientBoostingRegressor(**params)
+    params = {'n_estimators': 200}
+    clf = GradientBoostingRegressor(n_estimators=200, max_depth=3, learning_rate=0.1, loss='huber', alpha=0.95,
+                                    verbose=1)
     clf.fit(train_set, target_train)
     print('TIME ELAPSED:', time.get_time_hhmmss())
 

@@ -130,5 +130,28 @@ RFR Score (R^2): 0.865608822831
 Mean Squared Error: 0.0559851703244
 Root Mean Squared Error: 0.2366118558407467
 Mean Absolute Error: 0.0512401905142
+'''
+
+'''
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+[Parallel(n_jobs=-1)]: Done  34 tasks      | elapsed:  4.5min
+[Parallel(n_jobs=-1)]: Done 184 tasks      | elapsed: 22.9min
+[Parallel(n_jobs=-1)]: Done 250 out of 250 | elapsed: 30.8min finished
+TIME ELAPSED: 00:30:46
+Saving model
+TIME SPENT:  00:22:31
+Predicting target with X_test (TEST SET)
+[Parallel(n_jobs=8)]: Done  34 tasks      | elapsed:   18.5s
+[Parallel(n_jobs=8)]: Done 184 tasks      | elapsed:  1.1min
+[Parallel(n_jobs=8)]: Done 250 out of 250 | elapsed:  2.4min finished
+TIME ELAPSED: 00:02:58
+[Parallel(n_jobs=8)]: Done  34 tasks      | elapsed:   13.8s
+[Parallel(n_jobs=8)]: Done 184 tasks      | elapsed:   53.4s
+[Parallel(n_jobs=8)]: Done 250 out of 250 | elapsed:  3.0min finished
+RFR Score (R^2): 0.866474634714
+Mean Squared Error: 0.0556244872293
+Root Mean Squared Error: 0.23584844122718152
+Mean Absolute Error: 0.0510577645485
 
 '''
