@@ -2,7 +2,7 @@ from math import sqrt
 
 import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor
-from sklearn.metrics import mean_squared_error,r2_score
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import python.Config as Config
 import python.Timer as Timer
 import python.Data as Data
@@ -15,7 +15,7 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-RUN_WITH_PCA = True
+RUN_WITH_PCA = False
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
 
 
 def read_normal(lines):
-    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputerBinary.h5')
+    chunks = Data.read_chunks('/ColumnedDatasetNonNegativeWithDateImputer.h5')
 
     # Generating X and y
     y = chunks['quantity_time_key']
@@ -37,11 +37,11 @@ def read_normal(lines):
 
     print('CHUNKS AFTER REMOVING:\n', x)
 
-    return RandomSplit.get_sample(x.iloc[0:lines], y.iloc[0:lines]), x
+    return RandomSplit.get_sample(x, y), x
 
 
 def read_pca():
-    df = Data.read_hdf('/PCAed.h5')
+    df = Data.read_hdf('/PCAed50.h5')
     target = Data.read_hdf('/ColumnedDatasetNonNegativeWithDateImputer.h5')
     target = target['quantity_time_key']
 
@@ -53,7 +53,7 @@ def run_etr(data, x):
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    clf = ExtraTreesRegressor()
+    clf = ExtraTreesRegressor(verbose=1, n_jobs=-1, n_estimators=50)
     clf.fit(train_set, target_train)
     print('TIME ELAPSED: ', time.get_time_hhmmss())
 
@@ -65,9 +65,60 @@ def run_etr(data, x):
     mse = mean_squared_error(target_test, y_prediction)
     r2 = r2_score(target_test, y_prediction)
 
+    print('Mean Absolute Error', mean_absolute_error(target_test, y_prediction))
+    print('Root Mean Squared Error', sqrt(mean_squared_error(target_test, y_prediction)))
     print("MSE: %.4f" % mse)
     print("R2: %.4f" % r2)
 
 
 # Run script
 main()
+
+'''
+Reading /PCAed50.h5 file
+TIME ELAPSED:  00:00:04
+Reading /ColumnedDatasetNonNegativeWithDateImputer.h5 file
+TIME ELAPSED:  00:00:02
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+TIME ELAPSED:  00:14:01
+Predicting target with X_test (TEST SET)
+TIME ELAPSED:  00:00:10
+Mean Absolute Error 0.055160486109
+Root Mean Squared Error 0.2537421547073574
+MSE: 0.0644
+R2: 0.8454
+'''
+
+'''
+Estimators = 30
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+[Parallel(n_jobs=-1)]: Done  30 out of  30 | elapsed:  2.3min finished
+TIME ELAPSED:  00:02:18
+Predicting target with X_test (TEST SET)
+[Parallel(n_jobs=8)]: Done  30 out of  30 | elapsed:    5.6s finished
+TIME ELAPSED:  00:00:05
+Mean Absolute Error 0.0534063973
+Root Mean Squared Error 0.24408269319884998
+MSE: 0.0596
+R2: 0.8570
+'''
+
+'''
+Estimators = 50
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+[Parallel(n_jobs=-1)]: Done  34 tasks      | elapsed:  3.0min
+[Parallel(n_jobs=-1)]: Done  50 out of  50 | elapsed:  3.9min finished
+TIME ELAPSED:  00:03:53
+Predicting target with X_test (TEST SET)
+[Parallel(n_jobs=8)]: Done  34 tasks      | elapsed:    7.2s
+[Parallel(n_jobs=8)]: Done  50 out of  50 | elapsed:    9.5s finished
+TIME ELAPSED:  00:00:10
+Mean Absolute Error 0.0530685872765
+Root Mean Squared Error 0.24284371232589078
+MSE: 0.0590
+R2: 0.8584
+'''
+

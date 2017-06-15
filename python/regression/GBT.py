@@ -1,7 +1,7 @@
 from math import sqrt
 
 import pandas as pd
-from sklearn.metrics import mean_squared_error,r2_score
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from sklearn.ensemble import GradientBoostingRegressor
 import python.Config as Config
 import python.Timer as Timer
@@ -15,7 +15,7 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-RUN_WITH_PCA = True
+RUN_WITH_PCA = False
 
 
 def main():
@@ -29,7 +29,9 @@ def main():
 
 
 def read_normal(lines):
-    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputerBinary.h5')
+    chunks = Data.read_chunks('/ColumnedDatasetNonNegativeWithDateImputer.h5')
+
+    print(chunks);
 
     # Generating X and y
     y = chunks['quantity_time_key']
@@ -37,7 +39,7 @@ def read_normal(lines):
 
     print('CHUNKS AFTER REMOVING:\n', x)
 
-    return RandomSplit.get_sample(x.iloc[0:lines], y.iloc[0:lines]), x
+    return RandomSplit.get_sample(x, y), x
 
 
 def read_pca():
@@ -45,7 +47,7 @@ def read_pca():
     target = Data.read_hdf('/ColumnedDatasetNonNegativeWithDateImputer.h5')
     target = target['quantity_time_key']
 
-    return RandomSplit.get_sample(df.iloc[0:500000], target.iloc[0:500000]), df
+    return RandomSplit.get_sample(df, target), df
 
 
 def run_gbt(data, x):
@@ -53,8 +55,9 @@ def run_gbt(data, x):
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    params = {'n_estimators': 200, 'max_depth': 3,
-              'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
+    params = {'n_estimators': 120, 'max_depth': 3,
+              'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95, 'random_state': 1000, 'max_features': 'sqrt',
+              'verbose': 1}
     clf = GradientBoostingRegressor(**params)
     clf.fit(train_set, target_train)
     print('TIME ELAPSED: ', time.get_time_hhmmss())
@@ -67,6 +70,8 @@ def run_gbt(data, x):
     mse = mean_squared_error(target_test, y_prediction)
     r2 = r2_score(target_test, y_prediction)
 
+    print('Mean Absolute Error', mean_absolute_error(target_test, y_prediction))
+    print('Root Mean Squared Error', sqrt(mean_squared_error(target_test, y_prediction)))
     print("MSE: %.4f" % mse)
     print("R2: %.4f" % r2)
 
@@ -88,3 +93,31 @@ def run_gbt(data, x):
 
 # Run script
 main()
+
+'''
+Reading /PCAed50.h5 file
+TIME ELAPSED:  00:00:03
+Reading /ColumnedDatasetNonNegativeWithDateImputer.h5 file
+TIME ELAPSED:  00:00:02
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+TIME ELAPSED:  01:11:54
+Predicting target with X_test (TEST SET)
+TIME ELAPSED:  00:00:03
+MSE: 0.1002
+R2: 0.7595
+'''
+
+'''
+[4546011 rows x 13 columns]
+350 estimators
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+TIME ELAPSED:  00:31:33
+Predicting target with X_test (TEST SET)
+TIME ELAPSED:  00:00:06
+Mean Absolute Error 0.0621326114504
+Root Mean Squared Error 0.29159367020577187
+MSE: 0.0850
+R2: 0.7959
+'''

@@ -17,7 +17,7 @@ if not os.path.isfile(Config.H5_PATH + '/ColumnedDataset.pkl'):
 
 df = pd.read_pickle(Config.H5_PATH + '/ColumnedDataset.pkl')
 
-print(df.describe())
+print(df)
 
 del cols
 del df

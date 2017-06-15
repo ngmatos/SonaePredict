@@ -16,8 +16,8 @@ DATA_SET_SIZE = Config.TRIM_DATA_SET
 time = Timer.Timer()
 
 
-print('Reading chunks from ColumnedDatasetNonNegativeWithDateImputerBinary')
-iter_hdf = pd.read_hdf(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateImputerBinary.h5',
+print('Reading chunks from ColumnedDatasetNonNegativeWithDateImputer')
+iter_hdf = pd.read_hdf(Config.H5_PATH + '/ColumnedDatasetNonNegativeWithDateImputer.h5',
                        chunksize=Config.CHUNK_SIZE)
 
 chunks = []
@@ -42,9 +42,9 @@ print('CHUNKS AFTER REMOVING:\n', X)
 
 lasso = Lasso(alpha=0.1)
 
-Train_set, Test_set, Target_train, Target_test = train_test_split(X.iloc[0:DATA_SET_SIZE],
-                                                                  y.iloc[0:DATA_SET_SIZE],
-                                                                  test_size=0.3,
+Train_set, Test_set, Target_train, Target_test = train_test_split(X,
+                                                                  y,
+                                                                  test_size=0.4,
                                                                   random_state=42)
 time.restart()
 print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
@@ -57,7 +57,7 @@ y_prediction = lasso.predict(X=Test_set)
 print('TIME ELAPSED: ', time.get_time_hhmmss())
 
 # Constructing a data frame for visualisation purposes
-df = pd.DataFrame(data=y_prediction, columns=['TargetPrediction(yPred)'], index=Test_set.index)
+df = pd.DataFrame(data=y_prediction, columns=['TargetPrediction(yPred)'], index=Target_test.index)
 df['TargetTest(yTest)'] = pd.Series(Target_test)
 
 print('Mean of Target: ', np.mean(y))
@@ -83,3 +83,20 @@ del Test_set
 del Target_test
 del y_prediction
 del df
+
+'''
+Full data frame description:
+        TargetPrediction(yPred)  TargetTest(yTest)
+count             1.363804e+06       1.363804e+06
+mean              1.070951e-01       1.064061e-01
+std               5.712002e-01       6.454332e-01
+min              -7.745373e-03       0.000000e+00
+25%               9.026660e-03       0.000000e+00
+50%               1.965499e-02       0.000000e+00
+75%               5.194681e-02       3.333000e-02
+max               4.920873e+01       6.728900e+01
+Lasso Score (R^2):  0.749612538813
+Mean Squared Error 0.104307328479
+Root Mean Squared Error 0.3229664510120647
+Mean Absolute Error 0.0734283518468
+'''

@@ -2,7 +2,7 @@ from math import sqrt
 
 import pandas as pd
 from sklearn.ensemble import AdaBoostRegressor
-from sklearn.metrics import mean_squared_error,r2_score
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import python.Config as Config
 import python.Timer as Timer
 import python.Data as Data
@@ -15,7 +15,7 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-RUN_WITH_PCA = False
+RUN_WITH_PCA = True
 
 
 def main():
@@ -41,8 +41,8 @@ def read_normal(lines):
 
 
 def read_pca():
-    df = Data.read_hdf('PCAed.h5')
-    target = Data.read_hdf('ColumnedDatasetNonNegativeWithDateImputer.h5')
+    df = Data.read_hdf('/PCAed50.h5')
+    target = Data.read_hdf('/ColumnedDatasetNonNegativeWithDateImputer.h5')
     target = target['quantity_time_key']
 
     return RandomSplit.get_sample(df, target), df
@@ -65,6 +65,8 @@ def run_etr(data, x):
     mse = mean_squared_error(target_test, y_prediction)
     r2 = r2_score(target_test, y_prediction)
 
+    print('Mean Absolute Error', mean_absolute_error(target_test, y_prediction))
+    print('Root Mean Squared Error', sqrt(mean_squared_error(target_test, y_prediction)))
     print("MSE: %.4f" % mse)
     print("R2: %.4f" % r2)
 
