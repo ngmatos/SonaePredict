@@ -2,7 +2,7 @@ from math import sqrt
 
 import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+from sklearn.metrics import mean_squared_error,r2_score,mean_absolute_error
 import python.Config as Config
 import python.Timer as Timer
 import python.Data as Data
@@ -11,41 +11,25 @@ import matplotlib.pyplot as plot
 import numpy as np
 
 # Extra Trees Regressor
-# Can run with or without PCA (specify in global var)
 
 # Global vars
 time = Timer.Timer()
-RUN_WITH_PCA = False
 
 
 def main():
-    if RUN_WITH_PCA:
-        data, x = read_pca()
-    else:
-        data, x = read_normal(Config.TRIM_DATA_SET)
-
+    data, x = read_normal()
     # Run this function for each alpha
     run_etr(data, x)
 
 
-def read_normal(lines):
-    chunks = Data.read_chunks('/ColumnedDatasetNonNegativeWithDateImputer.h5')
+def read_normal():
+    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputer.h5')
 
     # Generating X and y
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    print('CHUNKS AFTER REMOVING:\n', x)
-
     return RandomSplit.get_sample(x, y), x
-
-
-def read_pca():
-    df = Data.read_hdf('/PCAed50.h5')
-    target = Data.read_hdf('/ColumnedDatasetNonNegativeWithDateImputer.h5')
-    target = target['quantity_time_key']
-
-    return RandomSplit.get_sample(df, target), df
 
 
 def run_etr(data, x):
@@ -53,22 +37,16 @@ def run_etr(data, x):
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    clf = ExtraTreesRegressor(verbose=1, n_jobs=-1, n_estimators=50)
+    clf = ExtraTreesRegressor()
     clf.fit(train_set, target_train)
-    print('TIME ELAPSED: ', time.get_time_hhmmss())
+    time.print()
 
     time.restart()
     print('Predicting target with X_test (TEST SET)')
     y_prediction = clf.predict(test_set)
-    print('TIME ELAPSED: ', time.get_time_hhmmss())
+    time.print()
 
-    mse = mean_squared_error(target_test, y_prediction)
-    r2 = r2_score(target_test, y_prediction)
-
-    print('Mean Absolute Error', mean_absolute_error(target_test, y_prediction))
-    print('Root Mean Squared Error', sqrt(mean_squared_error(target_test, y_prediction)))
-    print("MSE: %.4f" % mse)
-    print("R2: %.4f" % r2)
+    Data.print_scores(target_test, y_prediction)
 
 
 # Run script
@@ -121,4 +99,3 @@ Root Mean Squared Error 0.24284371232589078
 MSE: 0.0590
 R2: 0.8584
 '''
-

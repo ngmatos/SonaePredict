@@ -11,70 +11,47 @@ import matplotlib.pyplot as plot
 import numpy as np
 
 # Gradient Boosting Trees
-# Can run with or without PCA (specify in global var)
 
 # Global vars
 time = Timer.Timer()
-RUN_WITH_PCA = False
+params = {'n_estimators': 200, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
 
 
 def main():
-    if RUN_WITH_PCA:
-        data, x = read_pca()
-    else:
-        data, x = read_normal(Config.TRIM_DATA_SET)
-
+    data, x = read_normal()
     # Run this function for each alpha
     run_gbt(data, x)
 
 
-def read_normal(lines):
+def read_normal():
     chunks = Data.read_chunks('/ColumnedDatasetNonNegativeWithDateImputer.h5')
-
-    print(chunks);
 
     # Generating X and y
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    print('CHUNKS AFTER REMOVING:\n', x)
-
     return RandomSplit.get_sample(x, y), x
-
-
-def read_pca():
-    df = Data.read_hdf('/PCAed50.h5')
-    target = Data.read_hdf('/ColumnedDatasetNonNegativeWithDateImputer.h5')
-    target = target['quantity_time_key']
-
-    return RandomSplit.get_sample(df, target), df
-
 
 def run_gbt(data, x):
     train_set, test_set, target_train, target_test = data
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    params = {'n_estimators': 120, 'max_depth': 3,
-              'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95, 'random_state': 1000, 'max_features': 'sqrt',
-              'verbose': 1}
     clf = GradientBoostingRegressor(**params)
     clf.fit(train_set, target_train)
-    print('TIME ELAPSED: ', time.get_time_hhmmss())
+    print('TIME ELAPSED:', time.get_time_hhmmss())
 
     time.restart()
     print('Predicting target with X_test (TEST SET)')
     y_prediction = clf.predict(test_set)
-    print('TIME ELAPSED: ', time.get_time_hhmmss())
+    print('TIME ELAPSED:', time.get_time_hhmmss())
 
-    mse = mean_squared_error(target_test, y_prediction)
-    r2 = r2_score(target_test, y_prediction)
+    print('GBR Score (R^2):', clf.score(test_set, target_test))
+    print('Mean Squared Error:', mean_squared_error(target_test, y_prediction))
+    print('Root Mean Squared Error:', sqrt(mean_squared_error(target_test, y_prediction)))
+    print('Mean Absolute Error:', mean_absolute_error(target_test, y_prediction))
 
-    print('Mean Absolute Error', mean_absolute_error(target_test, y_prediction))
-    print('Root Mean Squared Error', sqrt(mean_squared_error(target_test, y_prediction)))
-    print("MSE: %.4f" % mse)
-    print("R2: %.4f" % r2)
-
+    # Plotting
     test_score = np.zeros((params['n_estimators'], ), dtype=np.float64)
 
     for i, y_pred in enumerate(clf.staged_predict(test_set)):
