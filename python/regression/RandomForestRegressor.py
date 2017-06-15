@@ -48,13 +48,15 @@ def run_rfr(data):
         scores, mse, mae, y_prediction = Data.cross_val_execute(clf, x, y, cv, n_jobs=-1)
         Data.print_scores(np.mean(scores), np.mean(mse), np.mean(mae))
         time.print()
+
+        plot_x = y
+        plot_y = y_prediction
     else:
         train_set, test_set, target_train, target_test = data
 
         print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
         clf.fit(train_set, target_train)
         time.print()
-
         time.restart()
         print('Predicting target with X_test (TEST SET)')
         y_prediction = clf.predict(test_set)
@@ -64,9 +66,12 @@ def run_rfr(data):
 
         print('RFR Score (R^2):', clf.score(test_set, target_test))
 
+        plot_x = target_test
+        plot_y = y_prediction
+
     # Plotting Results
     fig, ax = plot.subplots()
-    ax.scatter(y, y_prediction)
+    ax.scatter(plot_x, plot_y)
     ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
     ax.set_xlabel('Measured')
     ax.set_ylabel('Predicted')
