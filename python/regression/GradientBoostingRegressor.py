@@ -14,7 +14,7 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-params = {'n_estimators': 50, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
+params = {'n_estimators': 1, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95, 'verbose': 1}
 K_PARTITIONS = 3
 K_FOLD = False
 
@@ -64,7 +64,7 @@ def run_gbt(data):
         for i, y_pred in enumerate(clf.staged_predict(test_set)):
             test_score[i] = clf.loss_(target_test, y_pred)
 
-        plot.figure(figsize=(16, 12))
+        plot.figure(figsize=(8, 6))
         plot.subplot(1, 1, 1)
         plot.title('Deviance')
         plot.plot(np.arange(params['n_estimators']) + 1, clf.train_score_, 'b-', label='Training Set Deviance')
@@ -77,13 +77,11 @@ def run_gbt(data):
         plot_x = target_test
         plot_y = y_prediction
 
-    print(y)
-    print(y_prediction)
-
     # Plotting Results
+    plot.close()
     fig, ax = plot.subplots()
     ax.scatter(plot_x, plot_y)
-    ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+    ax.plot([plot_x.min(), plot_x.max()], [plot_x.min(), plot_x.max()], 'k--', lw=4)
     ax.set_xlabel('Measured')
     ax.set_ylabel('Predicted')
     plot.show()

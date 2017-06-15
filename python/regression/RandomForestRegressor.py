@@ -72,7 +72,7 @@ def run_rfr(data):
     # Plotting Results
     fig, ax = plot.subplots()
     ax.scatter(plot_x, plot_y)
-    ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+    ax.plot([plot_x.min(), plot_x.max()], [plot_y.min(), plot_y.max()], 'k--', lw=4)
     ax.set_xlabel('Measured')
     ax.set_ylabel('Predicted')
     plot.show()

@@ -33,7 +33,7 @@ def main():
 
 
 def read_normal(lines):
-    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputerBinary.h5')
+    chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputer.h5')
 
     # Generating X and y
     y = chunks['quantity_time_key']
@@ -56,6 +56,11 @@ def run_lasso(alpha, data):
     x, y = data
 
     time.restart()
+
+    for each in y:
+        print(each)
+
+    print(y.max())
 
     print('Fitting model with X_train and y_train...')
     train_set, test_set, target_train, target_test = RandomSplit.get_sample(x, y)
