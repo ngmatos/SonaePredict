@@ -2,6 +2,8 @@
 # are useless in this case
 import pandas as pd
 import python.Config as Config
+from IPython.display import HTML, display
+
 
 print('Demonstrating that some columns are useless for the problem')
 
