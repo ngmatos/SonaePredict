@@ -19,6 +19,7 @@ from sklearn import datasets
 # Global vars
 time = Timer.Timer()
 RUN_WITH_PCA = False
+K_PARTITIONS = 3
 
 
 def main():
@@ -27,14 +28,18 @@ def main():
     else:
         data = read_normal(Config.TRIM_DATA_SET)
 
+    alphas = np.logspace(-5, -0.5, 5)
     scores = list()
     scores_std = list()
 
     # Run this function for each alpha
-    for alpha in np.logspace(-5, 0.1, 3):
+    for alpha in alphas:
         mean, std = run_lasso(alpha, data)
         scores.append(mean)
         scores_std.append(std)
+
+    # Plot alphas
+    # plot_alphas(alphas, scores, scores_std)
 
 
 def read_normal(lines):
@@ -61,7 +66,7 @@ def run_lasso(alpha, data):
     x, y = data
 
     time.restart()
-    cv = KFold.get()
+    cv = KFold.get(K_PARTITIONS)
 
     print('Fitting model with X_train and y_train...')
     scores, mse, mae, y_prediction = Data.cross_val_execute(lasso, x, y, cv, n_jobs=-1)
@@ -77,10 +82,30 @@ def run_lasso(alpha, data):
     ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
     ax.set_xlabel('Measured')
     ax.set_ylabel('Predicted')
-    plot.show()
+    plot.show(block=False)
 
     # Return scores
     return r2, std
+
+
+def plot_alphas(alphas, scores, scores_std):
+    scores, scores_std = np.array(scores), np.array(scores_std)
+
+    plot.figure().set_size_inches(10, 8)
+    plot.semilogx(alphas, scores)
+    std_error = scores_std / np.sqrt(K_PARTITIONS)
+    plot.semilogx(alphas, scores + std_error, 'b--')
+    plot.semilogx(alphas, scores - std_error, 'b--')
+
+    # alpha=0.2 controls the translucency of the fill color
+    plot.fill_between(alphas, scores + std_error, scores - std_error, alpha=0.2)
+
+    plot.ylabel('CV score +/- std error')
+    plot.xlabel('alpha')
+    plot.axhline(np.max(scores), linestyle='--', color='.5')
+    plot.xlim([alphas[0], alphas[-1]])
+
+    plot.show()
 
 
 # Run script

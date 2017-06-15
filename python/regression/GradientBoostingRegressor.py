@@ -6,7 +6,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 import python.Config as Config
 import python.Timer as Timer
 import python.Data as Data
-import python.sampling.RandomSplit as RandomSplit
+from python.sampling import KFold, RandomSplit
 import matplotlib.pyplot as plot
 import numpy as np
 
@@ -14,13 +14,15 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-params = {'n_estimators': 200, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
+params = {'n_estimators': 100, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
+K_PARTITIONS = 3
+K_FOLD = True
 
 
 def main():
-    data, x = read_normal()
+    data = read_normal()
     # Run this function for each alpha
-    run_gbt(data, x)
+    run_gbt(data)
 
 
 def read_normal():
@@ -30,42 +32,53 @@ def read_normal():
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return RandomSplit.get_sample(x, y), x
+    return x, y
 
-def run_gbt(data, x):
-    train_set, test_set, target_train, target_test = data
+
+def run_gbt(data):
+    clf = GradientBoostingRegressor(**params)
+    x, y = data
+
     time.restart()
+    cv = KFold.get(K_PARTITIONS)
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    clf = GradientBoostingRegressor(**params)
-    clf.fit(train_set, target_train)
-    print('TIME ELAPSED:', time.get_time_hhmmss())
+    if K_FOLD:
+        scores, mse, mae, y_prediction = Data.cross_val_execute(clf, x, y, cv, fit_params=params, n_jobs=-1)
+        Data.print_scores(np.mean(scores), np.mean(mse), np.mean(mae))
+        time.print()
+    else:
+        train_set, test_set, target_train, target_test = RandomSplit.get_sample(x, y)
+        clf.fit(train_set, target_train)
+        time.print()
+        time.restart()
+        print('Predicting target with X_test (TEST SET)')
+        y_prediction = clf.predict(test_set)
+        time.print()
+        Data.calc_scores(target_test, y_prediction)
 
-    time.restart()
-    print('Predicting target with X_test (TEST SET)')
-    y_prediction = clf.predict(test_set)
-    print('TIME ELAPSED:', time.get_time_hhmmss())
+        # Plotting Deviance
+        test_score = np.zeros((params['n_estimators'],), dtype=np.float64)
+        for i, y_pred in enumerate(clf.staged_predict(test_set)):
+            test_score[i] = clf.loss_(target_test, y_pred)
 
-    print('GBR Score (R^2):', clf.score(test_set, target_test))
-    print('Mean Squared Error:', mean_squared_error(target_test, y_prediction))
-    print('Root Mean Squared Error:', sqrt(mean_squared_error(target_test, y_prediction)))
-    print('Mean Absolute Error:', mean_absolute_error(target_test, y_prediction))
+        plot.figure(figsize=(16, 12))
+        plot.subplot(1, 1, 1)
+        plot.title('Deviance')
+        plot.plot(np.arange(params['n_estimators']) + 1, clf.train_score_, 'b-', label='Training Set Deviance')
+        plot.plot(np.arange(params['n_estimators']) + 1, test_score, 'r-', label='Test Set Deviance')
+        plot.legend(loc='upper right')
+        plot.xlabel('Boosting Iterations')
+        plot.ylabel('Deviance')
+        plot.show()
 
-    # Plotting
-    test_score = np.zeros((params['n_estimators'], ), dtype=np.float64)
-
-    for i, y_pred in enumerate(clf.staged_predict(test_set)):
-        test_score[i] = clf.loss_(target_test, y_pred)
-
-    plot.figure(figsize=(100, 100))
-    plot.subplot(1, 1, 1)
-    plot.title('Deviance')
-    plot.plot(np.arange(params['n_estimators']) + 1, clf.train_score_, 'b-', label='Training Set Deviance')
-    plot.plot(np.arange(params['n_estimators']) + 1, test_score, 'r-', label='Test Set Deviance')
-    plot.legend(loc='upper right')
-    plot.xlabel('Boosting Iterations')
-    plot.ylabel('Deviance')
-    plot.show()
+    # Plotting Results
+    fig, ax = plot.subplots()
+    ax.scatter(y, y_prediction)
+    ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+    ax.set_xlabel('Measured')
+    ax.set_ylabel('Predicted')
+    plot.show(block=False)
 
 
 # Run script

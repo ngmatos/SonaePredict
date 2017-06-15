@@ -6,7 +6,7 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import python.Config as Config
 import python.Timer as Timer
 import python.Data as Data
-import python.sampling.RandomSplit as RandomSplit
+from python.sampling import RandomSplit, KFold
 import matplotlib.pyplot as plot
 import numpy as np
 
@@ -14,13 +14,16 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
+params = {'verbose': 1, 'n_jobs': -1, 'n_estimators': 50}
+K_FOLD = True
+K_PARTITIONS = 3
 
 
 def main():
-    data, x = read_normal()
+    data = read_normal()
 
     # Run this function for each alpha
-    run_rfr(data, x)
+    run_rfr(data)
 
 
 def read_normal():
@@ -30,29 +33,42 @@ def read_normal():
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return RandomSplit.get_sample(x, y), x
+    return x, y
 
 
-def run_rfr(data, x):
-    train_set, test_set, target_train, target_test = data
-    time.restart()
-
-    print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    clf = RandomForestRegressor(verbose=1, n_jobs=-1, n_estimators=50)
-    clf.fit(train_set, target_train)
-    time.print()
+def run_rfr(data):
+    clf = RandomForestRegressor(**params)
+    x, y = data
 
     time.restart()
-    print('Predicting target with X_test (TEST SET)')
-    y_prediction = clf.predict(test_set)
-    time.print()
+    cv = KFold.get(K_PARTITIONS)
+    if K_FOLD:
+        scores, mse, mae, y_prediction = Data.cross_val_execute(clf, x, y, cv, n_jobs=-1)
+        Data.print_scores(np.mean(scores), np.mean(mse), np.mean(mae))
+        time.print()
+    else:
+        train_set, test_set, target_train, target_test = data
 
-    Data.calc_scores(target_test, y_prediction)
+        print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
+        clf.fit(train_set, target_train)
+        time.print()
 
-    print('RFR Score (R^2):', clf.score(test_set, target_test))
-    # print('Mean Squared Error:', mean_squared_error(target_test, y_prediction))
-    # print('Root Mean Squared Error:', sqrt(mean_squared_error(target_test, y_prediction)))
-    # print('Mean Absolute Error:', mean_absolute_error(target_test, y_prediction))
+        time.restart()
+        print('Predicting target with X_test (TEST SET)')
+        y_prediction = clf.predict(test_set)
+        time.print()
+
+        Data.calc_scores(target_test, y_prediction)
+
+        print('RFR Score (R^2):', clf.score(test_set, target_test))
+
+    # Plotting Results
+    fig, ax = plot.subplots()
+    ax.scatter(y, y_prediction)
+    ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+    ax.set_xlabel('Measured')
+    ax.set_ylabel('Predicted')
+    plot.show(block=False)
 
 # Run script
 main()

@@ -5,7 +5,10 @@ import python.Timer as Timer
 import numpy as np
 from time import sleep
 from math import sqrt
+import scipy.sparse as sp
 from sklearn.externals.joblib import Parallel, delayed
+from sklearn.utils import safe_indexing
+from sklearn.utils.validation import (_is_arraylike, _num_samples, column_or_1d)
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error, r2_score
 
 
@@ -75,10 +78,22 @@ def cross_val_execute(alg, x, y, cv, fit_params=None, n_jobs=1):
 
 def fit_predict(alg, x, y, train, test, fit_params):
     fit_params = fit_params if fit_params is not None else {}
+    fit_params = dict([(k, _index_param_value(x, v, train))
+                       for k, v in fit_params.items()])
     x_train, x_test, y_train, y_test = x.iloc[train], x.iloc[test], y.iloc[train], y.iloc[test]
 
-    alg.fit(x_train, y_train, **fit_params)
+    alg.fit(x_train, y_train)
     y_predict = alg.predict(X=x_test)
 
-    return [alg.score(x_test, y_test), mean_squared_error(y_test, y_predict),
+    return [r2_score(y_test, y_predict), mean_squared_error(y_test, y_predict),
             mean_absolute_error(y_test, y_predict)], y_predict
+
+
+def _index_param_value(X, v, indices):
+    """Private helper function for parameter value indexing."""
+    if not _is_arraylike(v) or _num_samples(v) != _num_samples(X):
+        # pass through: skip indexing
+        return v
+    if sp.issparse(v):
+        v = v.tocsr()
+    return safe_indexing(v, indices)
