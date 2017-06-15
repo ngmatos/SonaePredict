@@ -24,20 +24,20 @@ def main():
     if RUN_WITH_PCA:
         data = read_pca()
     else:
-        data = read_normal(Config.TRIM_DATA_SET)
+        data = read_normal()
 
     # Run this function for each alpha
     run_mlp(data)
 
 
-def read_normal(lines):
+def read_normal():
     chunks = Data.read_chunks('ColumnedDatasetNonNegativeWithDateImputer.h5')
 
     # Generating X and y
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return RandomSplit.get_sample(x, y), x
+    return x, y
 
 
 def read_pca():
@@ -51,7 +51,9 @@ def read_pca():
 
 def run_mlp(data):
     mlp = MLPRegressor(random_state=42)
-    train_set, test_set, target_train, target_test = data
+    x, y = data
+    lines = Config.TRIM_DATA_SET
+    train_set, test_set, target_train, target_test = RandomSplit.get_sample(x.iloc[0:lines], y.iloc[0:lines])
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
