@@ -67,7 +67,7 @@ def run_mlp(data):
     # df = pd.DataFrame(data=y_prediction, columns=['TargetPrediction(yPred)'], index=test_set.index)
     # df['TargetTest(yTest)'] = pd.Series(target_test)
 
-    Data.print_scores(target_test, y_prediction)
+    Data.calc_scores(target_test, y_prediction)
 
 # Run script
 main()

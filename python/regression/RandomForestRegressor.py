@@ -42,7 +42,7 @@ def run_rfr(data, x):
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
     clf = RandomForestRegressor(verbose=1, n_jobs=-1, n_estimators=250)
     clf.fit(train_set, target_train)
-    print('TIME ELAPSED:', time.get_time_hhmmss())
+    time.print()
 
     time.restart()
     print('Saving model')
@@ -54,12 +54,14 @@ def run_rfr(data, x):
     time.restart()
     print('Predicting target with X_test (TEST SET)')
     y_prediction = clf.predict(test_set)
-    print('TIME ELAPSED:', time.get_time_hhmmss())
+    time.print()
+
+    Data.calc_scores(target_test, y_prediction)
 
     print('RFR Score (R^2):', clf.score(test_set, target_test))
-    print('Mean Squared Error:', mean_squared_error(target_test, y_prediction))
-    print('Root Mean Squared Error:', sqrt(mean_squared_error(target_test, y_prediction)))
-    print('Mean Absolute Error:', mean_absolute_error(target_test, y_prediction))
+    # print('Mean Squared Error:', mean_squared_error(target_test, y_prediction))
+    # print('Root Mean Squared Error:', sqrt(mean_squared_error(target_test, y_prediction)))
+    # print('Mean Absolute Error:', mean_absolute_error(target_test, y_prediction))
 
 # Run script
 main()
