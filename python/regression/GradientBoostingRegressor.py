@@ -14,7 +14,7 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-params = {'n_estimators': 50, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
+params = {'n_estimators': 100, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95}
 K_PARTITIONS = 3
 K_FOLD = False
 
@@ -52,6 +52,13 @@ def run_gbt(data):
     else:
         train_set, test_set, target_train, target_test = RandomSplit.get_sample(x, y)
         clf.fit(train_set, target_train)
+
+        # print('Saving model')
+        # filename = 'GBTModel.pkl'
+        # pickle.dump(clf, open(filename, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+        # joblib.dump(clf, filename, 5, pickle.HIGHEST_PROTOCOL)
+        # print('TIME SPENT: ', time.get_time_hhmmss())
+
         time.print()
         time.restart()
         print('Predicting target with X_test (TEST SET)')

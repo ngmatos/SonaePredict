@@ -51,12 +51,19 @@ def run_br(data, x):
     clf.fit(train_set, target_train)
     time.print()
 
+    # print('Saving model')
+    # filename = 'BRModel.pkl'
+    # pickle.dump(clf, open(filename, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+    # joblib.dump(clf, filename, 5, pickle.HIGHEST_PROTOCOL)
+    # print('TIME SPENT: ', time.get_time_hhmmss())
+
     time.restart()
     print('Predicting target with X_test (TEST SET)')
     y_prediction = clf.predict(test_set)
     time.print()
 
     Data.calc_scores(target_test, y_prediction)
+
 
 # Run script
 main()
