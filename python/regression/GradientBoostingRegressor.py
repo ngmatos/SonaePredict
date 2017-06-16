@@ -32,7 +32,7 @@ def read_normal():
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return x.iloc[0:100000], y.iloc[0:100000]
+    return x, y
 
 
 def run_gbt(data):
