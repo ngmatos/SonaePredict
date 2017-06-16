@@ -10,7 +10,6 @@ import python.sampling.RandomSplit as RandomSplit
 import matplotlib.pyplot as plot
 import numpy as np
 import _pickle as pickle
-import python.sPickle as sPickle
 
 # Extra Trees Regressor
 
@@ -114,4 +113,22 @@ Mean Absolute Error 0.0530685872765
 Root Mean Squared Error 0.24284371232589078
 MSE: 0.0590
 R2: 0.8584
+'''
+
+'''
+Using Random Split for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+[Parallel(n_jobs=-1)]: Done  34 tasks      | elapsed:  2.3min
+[Parallel(n_jobs=-1)]: Done 100 out of 100 | elapsed:  6.0min finished
+Time elapsed: 00:05:57 
+
+Predicting target with X_test (TEST SET)
+[Parallel(n_jobs=8)]: Done  34 tasks      | elapsed:    8.3s
+[Parallel(n_jobs=8)]: Done 100 out of 100 | elapsed:   24.2s finished
+Time elapsed: 00:00:25 
+
+R^2 Score: 0.863203416737
+Mean Squared Error: 0.0569872232321
+Root Mean Squared Error: 0.2387199682308713
+Mean Absolute Error: 0.0530372614282
 '''
