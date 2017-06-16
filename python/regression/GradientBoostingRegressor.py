@@ -36,7 +36,7 @@ def read_normal():
 
 
 def run_gbt(data):
-    clf = GradientBoostingRegressor(**params)
+    clf = GradientBoostingRegressor(verbose=1)
     x, y = data
 
     time.restart()
