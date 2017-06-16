@@ -17,10 +17,10 @@ time = Timer.Timer()
 
 
 def main():
-    data, x = read_normal()
+    data = read_normal()
 
     # Run this function for each alpha
-    run_br(data, x)
+    run_br(data)
 
 
 def read_normal():
@@ -30,26 +30,24 @@ def read_normal():
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return RandomSplit.get_sample(x, y), x
+    return x, y
 
 
-def read_pca():
-    df = Data.read_hdf('/PCAed50.h5')
-
-    target = Data.read_hdf('ColumnedDatasetNonNegativeWithDateImputer.h5')
-    target = target['quantity_time_key']
-
-    return RandomSplit.get_sample(df, target), df
-
-
-def run_br(data, x):
-    train_set, test_set, target_train, target_test = data
+def run_br(data):
+    x, y = data
+    train_set, test_set, target_train, target_test = RandomSplit.get_sample(x, y)
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
-    clf = BaggingRegressor(n_jobs=-1, n_estimators=1000, verbose=1)
+    clf = BaggingRegressor(n_jobs=-1, n_estimators=50, verbose=1)
     clf.fit(train_set, target_train)
     time.print()
+
+    # print('Saving model')
+    # filename = 'BRModel.pkl'
+    # pickle.dump(clf, open(filename, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+    # joblib.dump(clf, filename, 5, pickle.HIGHEST_PROTOCOL)
+    # print('TIME SPENT: ', time.get_time_hhmmss())
 
     time.restart()
     print('Predicting target with X_test (TEST SET)')
@@ -57,6 +55,15 @@ def run_br(data, x):
     time.print()
 
     Data.calc_scores(target_test, y_prediction)
+
+    # Plotting Results
+    fig, ax = plot.subplots()
+    ax.scatter(y, y_prediction)
+    ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+    ax.set_xlabel('Measured')
+    ax.set_ylabel('Predicted')
+    plot.show()
+
 
 # Run script
 main()

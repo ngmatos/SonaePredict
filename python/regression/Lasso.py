@@ -65,6 +65,13 @@ def run_lasso(alpha, data):
     print('Fitting model with X_train and y_train...')
     train_set, test_set, target_train, target_test = RandomSplit.get_sample(x, y)
     lasso.fit(train_set, target_train)
+
+    # print('Saving model')
+    # filename = 'LASSOModel.pkl'
+    # pickle.dump(lasso, open(filename, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+    # joblib.dump(lasso, filename, 5, pickle.HIGHEST_PROTOCOL)
+    # print('TIME SPENT: ', time.get_time_hhmmss())
+
     y_prediction = lasso.predict(X=test_set)
     Data.calc_scores(target_test, y_prediction)
 

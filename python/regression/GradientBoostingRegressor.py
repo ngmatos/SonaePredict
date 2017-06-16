@@ -14,7 +14,7 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-params = {'n_estimators': 1, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95, 'verbose': 1}
+params = {'n_estimators': 100, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95, 'verbose': 1}
 K_PARTITIONS = 3
 K_FOLD = False
 
@@ -52,6 +52,13 @@ def run_gbt(data):
     else:
         train_set, test_set, target_train, target_test = RandomSplit.get_sample(x, y)
         clf.fit(train_set, target_train)
+
+        # print('Saving model')
+        # filename = 'GBTModel.pkl'
+        # pickle.dump(clf, open(filename, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+        # joblib.dump(clf, filename, 5, pickle.HIGHEST_PROTOCOL)
+        # print('TIME SPENT: ', time.get_time_hhmmss())
+
         time.print()
         time.restart()
         print('Predicting target with X_test (TEST SET)')
@@ -60,8 +67,8 @@ def run_gbt(data):
         Data.calc_scores(target_test, y_prediction)
 
         # Plotting Deviance
-        test_score = np.zeros((params['n_estimators'],), dtype=np.float64)
-        for i, y_pred in enumerate(clf.staged_predict(test_set)):
+        test_score = np.zeros((params['n_estimators'], ), dtype=np.float64)
+        for i, y_pred in enumerate(clf.staged_decision_function(test_set)):
             test_score[i] = clf.loss_(target_test, y_pred)
 
         plot.figure(figsize=(8, 6))
@@ -77,8 +84,8 @@ def run_gbt(data):
         plot_x = target_test
         plot_y = y_prediction
 
+
     # Plotting Results
-    plot.close()
     fig, ax = plot.subplots()
     ax.scatter(plot_x, plot_y)
     ax.plot([plot_x.min(), plot_x.max()], [plot_x.min(), plot_x.max()], 'k--', lw=4)
@@ -116,4 +123,15 @@ Mean Absolute Error 0.0621326114504
 Root Mean Squared Error 0.29159367020577187
 MSE: 0.0850
 R2: 0.7959
+'''
+
+'''
+Estimators = 100
+Using K-Fold Cross Validation for evaluating estimator performance
+Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...
+R^2 Score: 0.735274230117
+Mean Squared Error: 0.127313089077
+Root Mean Squared Error: 0.35680959779238075
+Mean Absolute Error: 0.0673262423782
+Time elapsed: 00:09:56 
 '''

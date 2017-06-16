@@ -43,11 +43,11 @@ def run_etr(data, x):
     clf.fit(train_set, target_train)
     time.print()
 
-    time.restart()
-    print('Saving model')
-    filename = 'ETRModel.pkl'
-    pickle.dump(clf, open(filename, 'wb'))
-    print('TIME SPENT: ', time.get_time_hhmmss())
+    # time.restart()
+    # print('Saving model')
+    # filename = 'ETRModel.pkl'
+    # pickle.dump(clf, open(filename, 'wb'))
+    # print('TIME SPENT: ', time.get_time_hhmmss())
 
     time.restart()
     print('Predicting target with X_test (TEST SET)')

@@ -16,7 +16,7 @@ import pickle
 
 # Global vars
 time = Timer.Timer()
-params = {'verbose': 1, 'n_jobs': -1, 'n_estimators': 50}
+params = {'verbose': 1, 'n_jobs': -1, 'n_estimators': 100}
 K_FOLD = True
 K_PARTITIONS = 3
 
@@ -77,11 +77,11 @@ def run_rfr(data):
     ax.set_ylabel('Predicted')
     plot.show()
 
-    print('Saving model')
-    filename = 'RFRModel.pkl'
+    # print('Saving model')
+    # filename = 'RFRModel.pkl'
     # pickle.dump(clf, open(filename, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
-    joblib.dump(clf, filename, 5, pickle.HIGHEST_PROTOCOL)
-    print('TIME SPENT: ', time.get_time_hhmmss())
+    # joblib.dump(clf, filename, 5, pickle.HIGHEST_PROTOCOL)
+    # print('TIME SPENT: ', time.get_time_hhmmss())
 
 
 # Run script
@@ -176,5 +176,4 @@ RFR Score (R^2): 0.866474634714
 Mean Squared Error: 0.0556244872293
 Root Mean Squared Error: 0.23584844122718152
 Mean Absolute Error: 0.0510577645485
-
 '''
