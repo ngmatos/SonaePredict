@@ -26,9 +26,9 @@ def feature_importance(data):
     X, y = data
 
     # Build a forest and compute the feature importances
-    forest = ExtraTreesRegressor(n_estimators=50,
-                                  random_state=0, verbose=1)
+    forest = ExtraTreesRegressor(n_estimators=10, random_state=0, verbose=1, n_jobs=-1)
 
+    print("Fitting ExtraTreesRegressor")
     forest.fit(X, y)
     importances = forest.feature_importances_
     std = np.std([tree.feature_importances_ for tree in forest.estimators_],

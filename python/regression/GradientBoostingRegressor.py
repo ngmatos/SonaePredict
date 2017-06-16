@@ -32,11 +32,11 @@ def read_normal():
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return x, y
+    return x.iloc[0:100000], y.iloc[0:100000]
 
 
 def run_gbt(data):
-    clf = GradientBoostingRegressor(verbose=1)
+    clf = GradientBoostingRegressor(**params)
     x, y = data
 
     time.restart()
@@ -44,7 +44,7 @@ def run_gbt(data):
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
     if K_FOLD:
-        scores, mse, mae, y_prediction = Data.cross_val_execute(clf, x, y, cv, fit_params=params, n_jobs=-1)
+        scores, mse, mae, y_prediction = Data.cross_val_execute(clf, x, y, cv, n_jobs=-1)
         Data.print_scores(np.mean(scores), np.mean(mse), np.mean(mae))
         time.print()
         plot_x = y
@@ -67,8 +67,8 @@ def run_gbt(data):
         Data.calc_scores(target_test, y_prediction)
 
         # Plotting Deviance
-        test_score = np.zeros((params['n_estimators'], ), dtype=np.float64)
-        for i, y_pred in enumerate(clf.staged_decision_function(test_set)):
+        test_score = np.zeros((params['n_estimators'],), dtype=np.float64)
+        for i, y_pred in enumerate(clf.staged_predict(test_set)):
             test_score[i] = clf.loss_(target_test, y_pred)
 
         plot.figure(figsize=(8, 6))
@@ -84,7 +84,6 @@ def run_gbt(data):
         plot_x = target_test
         plot_y = y_prediction
 
-
     # Plotting Results
     fig, ax = plot.subplots()
     ax.scatter(plot_x, plot_y)
@@ -93,6 +92,22 @@ def run_gbt(data):
     ax.set_ylabel('Predicted')
     plot.show()
 
+    # Feature Importance
+    feature_importance(clf, x)
+
+
+def feature_importance(clf, X):
+    feature_importance = clf.feature_importances_
+    # make importances relative to max importance
+    feature_importance = 100.0 * (feature_importance / feature_importance.max())
+    sorted_idx = np.argsort(feature_importance)
+    pos = np.arange(sorted_idx.shape[0]) + .5
+    plot.subplot(1, 2, 2)
+    plot.barh(pos, feature_importance[sorted_idx], align='center')
+    plot.yticks(pos, X.columns[sorted_idx])
+    plot.xlabel('Relative Importance')
+    plot.title('Variable Importance')
+    plot.show()
 
 # Run script
 main()
