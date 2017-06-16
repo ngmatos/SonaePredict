@@ -14,7 +14,7 @@ import numpy as np
 
 # Global vars
 time = Timer.Timer()
-params = {'n_estimators': 100, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95, 'verbose': 1}
+params = {'n_estimators': 1000, 'max_depth': 3, 'learning_rate': 0.1, 'loss': 'huber', 'alpha': 0.95, 'verbose': 1}
 K_PARTITIONS = 3
 K_FOLD = False
 

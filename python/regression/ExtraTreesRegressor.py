@@ -19,9 +19,9 @@ time = Timer.Timer()
 
 
 def main():
-    data, x = read_normal()
+    data = read_normal()
     # Run this function for each alpha
-    run_etr(data, x)
+    run_etr(data)
 
 
 def read_normal():
@@ -31,11 +31,12 @@ def read_normal():
     y = chunks['quantity_time_key']
     x = chunks.drop('quantity_time_key', 1)
 
-    return RandomSplit.get_sample(x, y), x
+    return x, y
 
 
-def run_etr(data, x):
-    train_set, test_set, target_train, target_test = data
+def run_etr(data):
+    x, y = data
+    train_set, test_set, target_train, target_test = RandomSplit.get_sample(x, y)
     time.restart()
 
     print('Fitting model with X_train (TRAIN SET) and y_train (TARGET TRAIN SET)...')
@@ -55,6 +56,14 @@ def run_etr(data, x):
     time.print()
 
     Data.calc_scores(target_test, y_prediction)
+
+    # Plotting Results
+    fig, ax = plot.subplots()
+    ax.scatter(target_test, y_prediction)
+    ax.plot([target_test.min(), target_test.max()], [target_test.min(), target_test.max()], 'k--', lw=4)
+    ax.set_xlabel('Measured')
+    ax.set_ylabel('Predicted')
+    plot.show()
 
 # Run script
 main()
